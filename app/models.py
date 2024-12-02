@@ -2,7 +2,7 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 
 # Inisialisasi Firebase Admin SDK
-cred = credentials.Certificate("C:\\msib-abdul\\backend\\credentials.json")
+cred = credentials.Certificate(Config.FIREBASE_KEY_PATH)
 firebase_admin.initialize_app(cred)
 
 # Inisialisasi Firestore
