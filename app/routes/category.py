@@ -4,7 +4,7 @@ from app.models import db  # Pastikan db diimpor dari models.py
 category_bp = Blueprint('category', __name__)
 
 # Create a new category
-@category_bp.route('/categories', methods=['POST'])
+@category_bp.route('/category', methods=['POST'])
 def create_category():
     data = request.get_json()
 
@@ -15,7 +15,7 @@ def create_category():
 
     try:
         # Membuat dokumen baru dengan ID otomatis
-        category_ref = db.collection('categories').document()  # Firestore akan menghasilkan ID otomatis
+        category_ref = db.collection('category').document()  # Firestore akan menghasilkan ID otomatis
         category_ref.set({
             'name': name
         })
@@ -30,11 +30,11 @@ def create_category():
 
 
 # Delete category
-@category_bp.route('/categories/<category_id>', methods=['DELETE'])
+@category_bp.route('/category/<category_id>', methods=['DELETE'])
 def delete_category(category_id):
     try:
         # Referensi dokumen kategori
-        category_ref = db.collection('categories').document(category_id)
+        category_ref = db.collection('category').document(category_id)
         doc = category_ref.get()
 
         # Cek jika kategori tidak ada
@@ -49,12 +49,12 @@ def delete_category(category_id):
 
 
 # Update an existing category
-@category_bp.route('/categories/<category_id>', methods=['PUT'])
+@category_bp.route('/category/<category_id>', methods=['PUT'])
 def update_category(category_id):
     data = request.get_json()
 
     try:
-        category_ref = db.collection('categories').document(category_id)
+        category_ref = db.collection('category').document(category_id)
 
         # Cek apakah kategori ada di Firestore
         if not category_ref.get().exists:
@@ -71,10 +71,10 @@ def update_category(category_id):
 
 
 # Get category by ID
-@category_bp.route('/categories/<category_id>', methods=['GET'])
+@category_bp.route('/category/<category_id>', methods=['GET'])
 def get_category(category_id):
     try:
-        doc = db.collection('categories').document(category_id).get()
+        doc = db.collection('category').document(category_id).get()
 
         # Cek jika kategori tidak ada
         if not doc.exists:
