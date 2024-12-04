@@ -22,12 +22,12 @@ def update_user(user_id, user_data):
 def delete_user(user_id):
     db.collection('user').document(user_id).delete()
 # --- USERS ---
-def add_user(email, username, edge, birthday):
+def add_user(email, username, password, birthday):
     user_ref = db.collection('user').document()
     user_ref.set({
         'email': email,
         'username': username,
-        'edge': edge,  # Misalnya ini adalah usia atau informasi tambahan lainnya
+        'password': password,  
         'birthday': birthday
     })
     return user_ref.id  # Mengembalikan ID pengguna yang baru ditambahkan
@@ -42,15 +42,15 @@ def get_user(user_id):
         return None
 
 # Mengupdate informasi pengguna
-def update_user(user_id, email=None, username=None, edge=None, birthday=None):
+def update_user(user_id, email=None, username=None, password=None, birthday=None):
     user_ref = db.collection('user').document(user_id)
     update_data = {}
     if email:
         update_data['email'] = email
     if username:
         update_data['username'] = username
-    if edge:
-        update_data['edge'] = edge
+    if password:
+        update_data['password'] = password
     if birthday:
         update_data['birthday'] = birthday
     user_ref.update(update_data)
@@ -59,8 +59,8 @@ def update_user(user_id, email=None, username=None, edge=None, birthday=None):
 def delete_user(user_id):
     user_ref = db.collection('user').document(user_id)
     user_ref.delete()
-
-# untuk login
+    
+# Untuk Login
 def get_user_by_email(email):
     user = db.collection('user').where('email', '==', email).stream()
     for user in user:
