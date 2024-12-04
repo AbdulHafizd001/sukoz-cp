@@ -5,7 +5,7 @@ bookmark_bp = Blueprint('bookmark', __name__)
 
 # Add bookmark
 @bookmark_bp.route('/bookmark', methods=['POST'])
-def create_bookmark():  # Ubah nama fungsi untuk menghindari konflik
+def create_bookmark(): 
     data = request.get_json()
 
     if not data or 'user_id' not in data or 'recipe_id' not in data:
