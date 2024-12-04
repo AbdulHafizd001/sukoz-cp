@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from app.models import add_user, get_user, update_user, delete_user
 import re
 
+
 # Definisikan blueprint dengan nama 'bp'
 user_bp = Blueprint('user', __name__)
 
@@ -11,19 +12,20 @@ def create_user():
     data = request.get_json()
     email = data.get('email')
     username = data.get('username')
-    edge = data.get('edge')
+    password = data.get('password')
     birthday = data.get('birthday')
-    
-    if not all([email, username, edge, birthday]):
-        return jsonify({"error": "All fields are required"}), 400
 
+    if not all([email, username, password, birthday]):
+        return jsonify({"error": "All fields are required"}), 400
+    
     if len(password) < 8:
         return jsonify({"error": "Password must be at least 8 characters long"}), 400
     
     if not re.match(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$', password):
         return jsonify({"error": "Password must contain at least one letter, one number, and one special character"}), 400
-    
-    user_id = add_user(email, username, edge, birthday)
+
+
+    user_id = add_user(email, username, password, birthday)
     return jsonify({"message": "User created", "user_id": user_id}), 201
 
 # Mendapatkan data pengguna berdasarkan ID
@@ -40,10 +42,10 @@ def update_user_data(user_id):
     data = request.get_json()
     email = data.get('email')
     username = data.get('username')
-    edge = data.get('edge')
+    password = data.get('password')
     birthday = data.get('birthday')
 
-    update_user(user_id, email, username, edge, birthday)
+    update_user(user_id, email, username, password, birthday)
     return jsonify({"message": "User updated"}), 200
 
 # Menghapus pengguna berdasarkan ID
