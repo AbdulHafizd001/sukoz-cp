@@ -5,7 +5,7 @@ from app.models import add_user, get_user, update_user, delete_user
 bp = Blueprint('user', __name__)
 
 # Menambahkan pengguna baru
-@bp.route('/users', methods=['POST'])
+@bp.route('/user', methods=['POST'])
 def create_user():
     data = request.get_json()
     email = data.get('email')
@@ -20,7 +20,7 @@ def create_user():
     return jsonify({"message": "User created", "user_id": user_id}), 201
 
 # Mendapatkan data pengguna berdasarkan ID
-@bp.route('/users/<user_id>', methods=['GET'])
+@bp.route('/user/<user_id>', methods=['GET'])
 def get_user_by_id(user_id):
     user_data = get_user(user_id)
     if user_data:
@@ -28,7 +28,7 @@ def get_user_by_id(user_id):
     return jsonify({"error": "User not found"}), 404
 
 # Mengupdate data pengguna
-@bp.route('/users/<user_id>', methods=['PUT'])
+@bp.route('/user/<user_id>', methods=['PUT'])
 def update_user_data(user_id):
     data = request.get_json()
     email = data.get('email')
@@ -40,7 +40,7 @@ def update_user_data(user_id):
     return jsonify({"message": "User updated"}), 200
 
 # Menghapus pengguna berdasarkan ID
-@bp.route('/users/<user_id>', methods=['DELETE'])
+@bp.route('/user/<user_id>', methods=['DELETE'])
 def delete_user_data(user_id):
     delete_user(user_id)
     return jsonify({"message": "User deleted"}), 200
