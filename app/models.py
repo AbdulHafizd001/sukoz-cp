@@ -1,5 +1,6 @@
 import firebase_admin
 from firebase_admin import credentials, firestore
+from app.config import Config
 
 # Inisialisasi Firebase Admin SDK
 cred = credentials.Certificate(Config.FIREBASE_KEY_PATH)
@@ -10,19 +11,19 @@ db = firestore.client()
 
 # Fungsi model untuk User
 def add_user(user_data):
-    db.collection('users').add(user_data)
+    db.collection('user').add(user_data)
 
 def get_user(user_id):
-    return db.collection('users').document(user_id).get().to_dict()
+    return db.collection('user').document(user_id).get().to_dict()
 
 def update_user(user_id, user_data):
-    db.collection('users').document(user_id).update(user_data)
+    db.collection('user').document(user_id).update(user_data)
 
 def delete_user(user_id):
-    db.collection('users').document(user_id).delete()
+    db.collection('user').document(user_id).delete()
 # --- USERS ---
 def add_user(email, username, edge, birthday):
-    user_ref = db.collection('users').document()
+    user_ref = db.collection('user').document()
     user_ref.set({
         'email': email,
         'username': username,
@@ -33,7 +34,7 @@ def add_user(email, username, edge, birthday):
 
 # Mengambil data pengguna berdasarkan ID
 def get_user(user_id):
-    user_ref = db.collection('users').document(user_id)
+    user_ref = db.collection('user').document(user_id)
     user = user_ref.get()
     if user.exists:
         return user.to_dict()
@@ -42,7 +43,7 @@ def get_user(user_id):
 
 # Mengupdate informasi pengguna
 def update_user(user_id, email=None, username=None, edge=None, birthday=None):
-    user_ref = db.collection('users').document(user_id)
+    user_ref = db.collection('user').document(user_id)
     update_data = {}
     if email:
         update_data['email'] = email
@@ -56,10 +57,10 @@ def update_user(user_id, email=None, username=None, edge=None, birthday=None):
 
 # Menghapus pengguna berdasarkan ID
 def delete_user(user_id):
-    user_ref = db.collection('users').document(user_id)
+    user_ref = db.collection('user').document(user_id)
     user_ref.delete()
 
-# --- RECIPES ---
+# --- RECIPE ---
 def add_recipe(name, category, ingredients, instructions, image_url):
     recipe_data = {
         "name": name,
@@ -68,28 +69,28 @@ def add_recipe(name, category, ingredients, instructions, image_url):
         "instructions": instructions,
         "image_url": image_url
     }
-    recipe_ref = db.collection('recipes').document()
+    recipe_ref = db.collection('recipe').document()
     recipe_ref.set(recipe_data)
     return recipe_data
 
 def get_recipe(recipe_id):
-    return db.collection('recipes').document(recipe_id).get().to_dict()
+    return db.collection('recipe').document(recipe_id).get().to_dict()
 
 def update_recipe(recipe_id, data):
-    db.collection('recipes').document(recipe_id).update(data)
+    db.collection('recipe').document(recipe_id).update(data)
 
 def delete_recipe(recipe_id):
-    db.collection('recipes').document(recipe_id).delete()
+    db.collection('recipe').document(recipe_id).delete()
 
 # --- CATEGORIES ---
 def add_category(name):
-    category_ref = db.collection('categories').add({
+    category_ref = db.collection('category').add({
         'name': name
     })
     return category_ref.id  # Mengembalikan ID kategori yang baru ditambahkan
 
 def update_category(category_id, data):
-    category_ref = db.collection('categories').document(category_id)
+    category_ref = db.collection('category').document(category_id)
     if not category_ref.get().exists:
         return None
     category_ref.update({
@@ -98,7 +99,7 @@ def update_category(category_id, data):
     return category_ref.get().to_dict()  # Mengembalikan data kategori yang diperbarui
 
 def get_category(category_id):
-    category_ref = db.collection('categories').document(category_id)
+    category_ref = db.collection('category').document(category_id)
     category = category_ref.get()
     if category.exists:
         return category.to_dict()
@@ -106,36 +107,11 @@ def get_category(category_id):
         return None
 
 def delete_category(category_id):
-    category_ref = db.collection('categories').document(category_id)
+    category_ref = db.collection('category').document(category_id)
     if not category_ref.get().exists:
         return None
     category_ref.delete()
     return True
-
-# --- RATINGS --- #baru aja mengubah get_ratings menjadi get_rating
-def get_rating(filter_criteria):
-    # Logika untuk mendapatkan daftar rating berdasarkan filter
-    ratings = db.collection('ratings').where(filter_criteria['field'], '==', filter_criteria['value']).stream()
-    return [rating.to_dict() for rating in ratings]
-    
-def add_rating(rating_id, user_id, recipe_id, score, comment):
-    rating_ref = db.collection('ratings').document(rating_id)
-    rating_ref.set({
-        "user_id": user_id,
-        "recipe_id": recipe_id,
-        "score": score,
-        "comment": comment
-    })
-
-def get_rating(rating_id):
-    return db.collection('ratings').document(rating_id).get().to_dict()
-
-def update_rating(rating_id, data):
-    db.collection('ratings').document(rating_id).update(data)
-
-def delete_rating(rating_id):
-    db.collection('ratings').document(rating_id).delete()
-
 
 # --- BOOKMARKS ---
 def add_bookmark(bookmark_id, user_id, recipe_id):
