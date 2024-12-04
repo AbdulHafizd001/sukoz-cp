@@ -60,6 +60,13 @@ def delete_user(user_id):
     user_ref = db.collection('user').document(user_id)
     user_ref.delete()
 
+# untuk login
+def get_user_by_email(email):
+    user = db.collection('user').where('email', '==', email).stream()
+    for user in user:
+        return user.to_dict()
+    return None
+
 # --- RECIPE ---
 def add_recipe(name, category, ingredients, instructions, image_url):
     recipe_data = {
